@@ -11,12 +11,12 @@ func main() {
 
 	mux.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		fmt.Fprintln(w, `{"status":"ok"}`)
+		_, _ = fmt.Fprintln(w, `{"status":"ok"}`)
 	})
 
 	mux.HandleFunc("/api/ping", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		fmt.Fprintln(w, `{"message":"pong"}`)
+		_, _ = fmt.Fprintln(w, `{"message":"pong"}`)
 	})
 
 	addr := ":8080"
