@@ -4,9 +4,21 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+
+	"hey-lets-meet/internal/db"
 )
 
 func main() {
+	database, err := db.Open("hey-lets-meet.db")
+	if err != nil {
+		log.Fatalf("open db: %v", err)
+	}
+	defer database.SQL.Close()
+
+	if err := db.ApplyMigrations(database.SQL, "migrations"); err != nil {
+		log.Fatalf("apply migrations: %v", err)
+	}
+
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
