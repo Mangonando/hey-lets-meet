@@ -1,11 +1,13 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
+	"time"
 
+	"hey-lets-meet/internal/auth"
 	"hey-lets-meet/internal/db"
+	"hey-lets-meet/internal/httpapi"
 )
 
 func main() {
@@ -19,19 +21,21 @@ func main() {
 		log.Fatalf("apply migrations: %v", err)
 	}
 
-	mux := http.NewServeMux()
+	authRepo := &auth.Repo{DB: database.SQL}
+	authService := &auth.Service{
+		Repo:           authRepo,
+		SessionTTL:     7 * 24 * time.Hour,
+		CookieName:     "session",
+		CookieInsecure: true,
+	}
+	authHandlers := &auth.Handlers{Svc: authService}
 
-	mux.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		_, _ = fmt.Fprintln(w, `{"status":"ok"}`)
+	server := httpapi.New(httpapi.Dependencies{
+		AuthHandlers: authHandlers,
+		AuthService:  authService,
 	})
 
-	mux.HandleFunc("/api/ping", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		_, _ = fmt.Fprintln(w, `{"message":"pong"}`)
-	})
-
-	addr := ":8080"
-	log.Printf("API listening on %s", addr)
-	log.Fatal(http.ListenAndServe(addr, mux))
+	address := ":8080"
+	log.Printf("API listening on %s", address)
+	log.Fatal(http.ListenAndServe(address, server.Mux))
 }
