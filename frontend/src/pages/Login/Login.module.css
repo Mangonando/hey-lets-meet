@@ -1,0 +1,22 @@
+.page {
+  max-width: 420px;
+  margin: 48px auto;
+  padding: 24px;
+}
+
+.form {
+  display: grid;
+  gap: 12px;
+}
+
+.input {
+  width: 100%;
+}
+
+.error {
+  color: crimson;
+}
+
+.footer {
+  margin-top: 16px;
+}

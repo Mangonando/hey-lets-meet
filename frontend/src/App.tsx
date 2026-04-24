@@ -1,25 +1,28 @@
-import { useEffect, useState } from 'react'
-import './App.css'
-
-type PingResponse = { message: string }
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { AuthProvider } from './lib/auth'
+import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute'
+import Login from './pages/Login/Login'
+import Register from './pages/Register/Register'
+import Home from './pages/Home/Home'
 
 export default function App() {
-  const [ping, setPing] = useState<string>('loading...')
-
-  useEffect(() => {
-    fetch('/api/ping')
-      .then((r) => {
-        if (!r.ok) throw new Error(`HTTP ${r.status}`)
-        return r.json() as Promise<PingResponse>
-      })
-      .then((data) => setPing(data.message))
-      .catch(() => setPing('error'))
-  }, [])
-
   return (
-    <div style={{ padding: 24 }}>
-      <h1>hey lets meet</h1>
-      <p>if i say ping backend says {ping}</p>
-    </div>
+    <BrowserRouter>
+      <AuthProvider>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route
+            path="/app"
+            element={
+              <ProtectedRoute>
+                <Home />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="*" element={<Login />} />
+        </Routes>
+      </AuthProvider>
+    </BrowserRouter>
   )
 }

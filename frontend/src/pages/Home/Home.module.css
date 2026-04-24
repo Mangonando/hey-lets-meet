@@ -1,0 +1,13 @@
+.page {
+  max-width: 720px;
+  margin: 48px auto;
+  padding: 24px;
+}
+
+.logoutButton {
+  margin-top: 12px;
+}
+
+.divider {
+  margin: 24px 0;
+}
