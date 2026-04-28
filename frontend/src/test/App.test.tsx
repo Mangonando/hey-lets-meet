@@ -10,8 +10,8 @@ describe('App', () => {
     })
   })
 
-  it('renders the heading', () => {
+  it('renders the login page when unauthenticated', async () => {
     render(<App />)
-    expect(screen.getByText('hey lets meet')).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { name: 'Login' })).toBeInTheDocument()
   })
 })
