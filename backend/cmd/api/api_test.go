@@ -23,7 +23,7 @@ func TestRegisterLoginAndProtectRoute(t *testing.T) {
 	if err != nil {
 		t.Fatalf("open db: %v", err)
 	}
-	defer database.SQL.Close()
+	defer func() { _ = database.SQL.Close() }()
 
 	// migrations need a real folder path. ergo copy migrations into temp
 	if err := copyMigrations(tmpDir); err != nil {
@@ -62,7 +62,7 @@ func TestRegisterLoginAndProtectRoute(t *testing.T) {
 		if response.StatusCode != http.StatusCreated {
 			t.Fatalf("register status = %d, want %d", response.StatusCode, http.StatusCreated)
 		}
-		response.Body.Close()
+		_ = response.Body.Close()
 	}
 
 	// work protected
@@ -74,7 +74,7 @@ func TestRegisterLoginAndProtectRoute(t *testing.T) {
 		if response.StatusCode != http.StatusOK {
 			t.Fatalf("protected status = %d, want %d", response.StatusCode, http.StatusOK)
 		}
-		response.Body.Close()
+		_ = response.Body.Close()
 	}
 
 	// logout
@@ -83,7 +83,7 @@ func TestRegisterLoginAndProtectRoute(t *testing.T) {
 		if response.StatusCode != http.StatusOK {
 			t.Fatalf("logout status = %d, want %d", response.StatusCode, http.StatusOK)
 		}
-		response.Body.Close()
+		_ = response.Body.Close()
 	}
 
 	// now fail protected
@@ -95,7 +95,7 @@ func TestRegisterLoginAndProtectRoute(t *testing.T) {
 		if response.StatusCode != http.StatusUnauthorized {
 			t.Fatalf("protected after logout status = %d, want %d", response.StatusCode, http.StatusUnauthorized)
 		}
-		response.Body.Close()
+		_ = response.Body.Close()
 	}
 
 	// log in
@@ -104,7 +104,7 @@ func TestRegisterLoginAndProtectRoute(t *testing.T) {
 		if response.StatusCode != http.StatusOK {
 			t.Fatalf("login status = %d. want %d", response.StatusCode, http.StatusOK)
 		}
-		response.Body.Close()
+		_ = response.Body.Close()
 	}
 
 	// work protected again
@@ -116,7 +116,7 @@ func TestRegisterLoginAndProtectRoute(t *testing.T) {
 		if response.StatusCode != http.StatusOK {
 			t.Fatalf("protected after login status = %d, want %d", response.StatusCode, http.StatusOK)
 		}
-		response.Body.Close()
+		_ = response.Body.Close()
 	}
 }
 

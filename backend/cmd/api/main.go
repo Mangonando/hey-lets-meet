@@ -15,7 +15,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("open db: %v", err)
 	}
-	defer database.SQL.Close()
+	defer func() { _ = database.SQL.Close() }()
 
 	if err := db.ApplyMigrations(database.SQL, "migrations"); err != nil {
 		log.Fatalf("apply migrations: %v", err)
