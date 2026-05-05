@@ -1,0 +1,7 @@
+cookies.txt
+
+# SQLite databases
+*.db
+
+# OS
+.DS_Store
