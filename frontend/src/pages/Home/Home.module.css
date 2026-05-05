@@ -1,13 +1,84 @@
 .page {
-  max-width: 720px;
+  max-width: 900px;
   margin: 48px auto;
   padding: 24px;
 }
 
-.logoutButton {
-  margin-top: 12px;
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.headerTitle {
+  margin-bottom: 8px;
+}
+
+.headerEmail {
+  margin: 0;
 }
 
 .divider {
   margin: 24px 0;
+}
+
+.form {
+  display: grid;
+  gap: 12px;
+  max-width: 520px;
+}
+
+.fullWidth {
+  width: 100%;
+}
+
+.errorMessage {
+  color: crimson;
+}
+
+.resultsSection {
+  margin-top: 28px;
+}
+
+.bestPointCard {
+  padding: 16px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.bestPointTitle {
+  margin-top: 0;
+}
+
+.cardRow {
+  margin: 8px 0;
+}
+
+.debugDetails {
+  margin-top: 12px;
+}
+
+.debugPre {
+  margin-top: 12px;
+  white-space: pre-wrap;
+}
+
+.alternativesTitle {
+  margin-top: 20px;
+}
+
+.alternativesGrid {
+  display: grid;
+  gap: 12px;
+}
+
+.alternativeCard {
+  padding: 12px;
+  border: 1px solid #eee;
+  border-radius: 8px;
+}
+
+.alternativeCardRow {
+  margin-top: 6px;
 }
