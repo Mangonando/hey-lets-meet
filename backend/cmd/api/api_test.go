@@ -6,6 +6,7 @@ import (
 	"hey-lets-meet/internal/auth"
 	"hey-lets-meet/internal/db"
 	"hey-lets-meet/internal/httpapi"
+	"hey-lets-meet/internal/meetpoints"
 	"net/http"
 	"net/http/cookiejar"
 	"net/http/httptest"
@@ -44,9 +45,17 @@ func TestRegisterLoginAndProtectRoute(t *testing.T) {
 	}
 	authHandlers := &auth.Handlers{Svc: authService}
 
+	mpHandler := http.HandlerFunc(meetpoints.Handler{
+		Service: &meetpoints.Service{
+			Geocoder: meetpoints.MockGeocoder{},
+			Router:   meetpoints.MockRouter{WalkingSpeedMps: 1.4},
+		},
+	}.Suggest)
+
 	server := httpapi.New(httpapi.Dependencies{
-		AuthHandlers: authHandlers,
-		AuthService:  authService,
+		AuthHandlers:      authHandlers,
+		AuthService:       authService,
+		MeetpointsHandler: mpHandler,
 	})
 
 	testServer := httptest.NewServer(server.Mux)
@@ -73,6 +82,15 @@ func TestRegisterLoginAndProtectRoute(t *testing.T) {
 		}
 		if response.StatusCode != http.StatusOK {
 			t.Fatalf("protected status = %d, want %d", response.StatusCode, http.StatusOK)
+		}
+		_ = response.Body.Close()
+	}
+
+	// meetpoints suggest should work
+	{
+		response := postJSON(t, client, testServer.URL+"/api/meetpoints/suggest", map[string]string{"originA": "Alexanderplatz", "originB": "Hermannplatz"})
+		if response.StatusCode != http.StatusOK {
+			t.Fatalf("meetpoints status = %d, want %d", response.StatusCode, http.StatusOK)
 		}
 		_ = response.Body.Close()
 	}

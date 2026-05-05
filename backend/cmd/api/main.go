@@ -8,6 +8,7 @@ import (
 	"hey-lets-meet/internal/auth"
 	"hey-lets-meet/internal/db"
 	"hey-lets-meet/internal/httpapi"
+	"hey-lets-meet/internal/meetpoints"
 )
 
 func main() {
@@ -30,9 +31,17 @@ func main() {
 	}
 	authHandlers := &auth.Handlers{Svc: authService}
 
+	meetpointsHandler := http.HandlerFunc(meetpoints.Handler{
+		Service: &meetpoints.Service{
+			Geocoder: meetpoints.MockGeocoder{},
+			Router:   meetpoints.MockRouter{},
+		},
+	}.Suggest)
+
 	server := httpapi.New(httpapi.Dependencies{
-		AuthHandlers: authHandlers,
-		AuthService:  authService,
+		AuthHandlers:      authHandlers,
+		AuthService:       authService,
+		MeetpointsHandler: meetpointsHandler,
 	})
 
 	address := ":8080"

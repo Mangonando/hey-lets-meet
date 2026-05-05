@@ -1,8 +1,9 @@
 package httpapi
 
 import (
-	"hey-lets-meet/internal/auth"
 	"net/http"
+
+	"hey-lets-meet/internal/auth"
 )
 
 type Server struct {
@@ -10,8 +11,9 @@ type Server struct {
 }
 
 type Dependencies struct {
-	AuthHandlers *auth.Handlers
-	AuthService  *auth.Service
+	AuthHandlers      *auth.Handlers
+	AuthService       *auth.Service
+	MeetpointsHandler http.Handler
 }
 
 func corsMiddleware(next http.Handler) http.Handler {
@@ -28,25 +30,30 @@ func corsMiddleware(next http.Handler) http.Handler {
 	})
 }
 
-func New(dependencies Dependencies) *Server {
+func New(deps Dependencies) *Server {
 	mux := http.NewServeMux()
 
-	// public
+	// Public
 	mux.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		_, _ = w.Write([]byte(`{"status":"ok"}`))
 	})
 
-	mux.HandleFunc("/auth/register", dependencies.AuthHandlers.Register)
-	mux.HandleFunc("/auth/login", dependencies.AuthHandlers.Login)
-	mux.HandleFunc("/auth/logout", dependencies.AuthHandlers.Logout)
+	mux.HandleFunc("/auth/register", deps.AuthHandlers.Register)
+	mux.HandleFunc("/auth/login", deps.AuthHandlers.Login)
+	mux.HandleFunc("/auth/logout", deps.AuthHandlers.Logout)
 
-	// protected
-	mux.Handle("/auth/me", dependencies.AuthService.RequireAuth(http.HandlerFunc(dependencies.AuthHandlers.Me)))
+	// Protected
+	mux.Handle("/auth/me", deps.AuthService.RequireAuth(http.HandlerFunc(deps.AuthHandlers.Me)))
 
-	mux.Handle("/api/protected", dependencies.AuthService.RequireAuth(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	mux.Handle("/api/protected", deps.AuthService.RequireAuth(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		_, _ = w.Write([]byte(`{"message":"welcome"}`))
 	})))
+
+	mux.Handle("/api/meetpoints/suggest",
+		deps.AuthService.RequireAuth(deps.MeetpointsHandler),
+	)
+
 	return &Server{Mux: corsMiddleware(mux)}
 }
