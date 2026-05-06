@@ -17,7 +17,7 @@ type Options struct {
 }
 
 func DefaultOptions() Options {
-	return Options{GridSize: 7, RadiusMeters: 2000}
+	return Options{GridSize: 3, RadiusMeters: 2000}
 }
 
 func (s *Service) Suggest(req MeetRequest, departAt time.Time, options Options) (MeetResponse, error) {

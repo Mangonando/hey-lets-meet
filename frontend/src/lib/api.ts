@@ -17,7 +17,8 @@ export async function api<T>(
     let message = `HTTP ${response.status}`
     try {
       const data = await response.json()
-      if (data?.error) message = data.error
+      if (typeof data?.error === 'string') message = data.error
+      else if (data?.error?.message) message = data.error.message
     } catch {
       /* empty */
     }

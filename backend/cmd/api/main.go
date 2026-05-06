@@ -3,6 +3,8 @@ package main
 import (
 	"log"
 	"net/http"
+	"os"
+	"path/filepath"
 	"time"
 
 	"hey-lets-meet/internal/auth"
@@ -12,35 +14,63 @@ import (
 )
 
 func main() {
-	database, err := db.Open("hey-lets-meet.db")
-	if err != nil {
-		log.Fatalf("open db: %v", err)
-	}
-	defer func() { _ = database.SQL.Close() }()
+	_ = os.MkdirAll("./data", 0o755)
 
-	if err := db.ApplyMigrations(database.SQL, "migrations"); err != nil {
-		log.Fatalf("apply migrations: %v", err)
+	dbPath := filepath.Join("data", "app.db")
+	database, err := db.Open(dbPath)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer database.SQL.Close()
+
+	if err := db.ApplyMigrations(database.SQL, "./migrations"); err != nil {
+		log.Fatal(err)
 	}
 
 	authRepo := &auth.Repo{DB: database.SQL}
-	authService := &auth.Service{
+	authSvc := &auth.Service{
 		Repo:           authRepo,
 		SessionTTL:     7 * 24 * time.Hour,
-		CookieName:     "session",
+		CookieName:     "hlm_session",
 		CookieInsecure: true,
 	}
-	authHandlers := &auth.Handlers{Svc: authService}
+	authHandlers := &auth.Handlers{Svc: authSvc}
 
-	meetpointsHandler := http.HandlerFunc(meetpoints.Handler{
-		Service: &meetpoints.Service{
+	meetpointsCache := meetpoints.CacheRepo{DB: database.SQL}
+
+	orsKey := os.Getenv("ORS_API_KEY")
+	orsBaseURL := os.Getenv("ORS_BASE_URL")
+	if orsBaseURL == "" {
+		orsBaseURL = "https://api.openrouteservice.org"
+	}
+
+	httpClient := &http.Client{Timeout: 10 * time.Second}
+
+	var meetpointsService *meetpoints.Service
+	if orsKey != "" {
+		orsConfig := meetpoints.ORSConfig{
+			BaseURL: orsBaseURL,
+			APIKey:  orsKey,
+			Timeout: 10 * time.Second,
+		}
+		meetpointsService = &meetpoints.Service{
+			Geocoder: meetpoints.ORSGeocoder{HTTP: httpClient, Config: orsConfig, Cache: meetpointsCache},
+			Router:   meetpoints.ORSRouter{HTTP: httpClient, Config: orsConfig, Cache: meetpointsCache},
+		}
+		log.Println("Meetpoints: using OpenRouteService providers")
+	} else {
+		meetpointsService = &meetpoints.Service{
 			Geocoder: meetpoints.MockGeocoder{},
-			Router:   meetpoints.MockRouter{},
-		},
-	}.Suggest)
+			Router:   meetpoints.MockRouter{WalkingSpeedMps: 1.4},
+		}
+		log.Println("Meetpoints: ORS_API_KEY not set, using mock providers")
+	}
+
+	meetpointsHandler := http.HandlerFunc(meetpoints.Handler{Service: meetpointsService}.Suggest)
 
 	server := httpapi.New(httpapi.Dependencies{
 		AuthHandlers:      authHandlers,
-		AuthService:       authService,
+		AuthService:       authSvc,
 		MeetpointsHandler: meetpointsHandler,
 	})
 

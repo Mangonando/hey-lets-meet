@@ -7,14 +7,26 @@ Go REST API with SQLite, session-based auth, and automatic database migrations.
 - Go 1.26+
 - [golangci-lint](https://golangci-lint.run/usage/install/) (for linting)
 
+## Environment
+
+Create `backend/.env`:
+
+```
+ORS_API_KEY=your_key_here
+```
+
+Get a free key at [openrouteservice.org](https://openrouteservice.org). Without it the server starts with mock providers.
+
 ## Run
 
 ```sh
 cd backend
-go run ./cmd/api
+export $(cat .env | xargs) && go run ./cmd/api
 ```
 
-The server starts on `http://localhost:8080`. On first run it creates `hey-lets-meet.db` and applies all pending migrations automatically.
+The server starts on `http://localhost:8080`. On first run it creates `data/app.db` and applies all pending migrations automatically.
+
+If `ORS_API_KEY` is not set, mock geocoding and routing are used instead.
 
 ## Test
 

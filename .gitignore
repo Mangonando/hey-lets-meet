@@ -3,5 +3,8 @@ cookies.txt
 # SQLite databases
 *.db
 
+# Environment
+.env
+
 # OS
 .DS_Store
