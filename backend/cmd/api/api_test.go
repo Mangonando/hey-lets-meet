@@ -64,6 +64,15 @@ func TestRegisterLoginAndProtectRoute(t *testing.T) {
 	jar, _ := cookiejar.New(nil)
 	client := &http.Client{Jar: jar}
 
+	// meetpoints without auth => 401
+	{
+		response := postJSON(t, client, testServer.URL+"/api/meetpoints/suggest", map[string]string{"originA": "Alexanderplatz", "originB": "Hermannplatz"})
+		if response.StatusCode != http.StatusUnauthorized {
+			t.Fatalf("unauthenticated suggest status = %d, want %d", response.StatusCode, http.StatusUnauthorized)
+		}
+		_ = response.Body.Close()
+	}
+
 	// register auto log in
 	{
 		body := map[string]string{"email": "test@example.com", "password": "pwd123456"}
