@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useAuth } from '../../lib/useAuth'
 import styles from './Home.module.css'
 import { api } from '../../lib/api'
+import MapView from '../../components/MapView/MapView'
 
 
 type LatLng = { lat: number, lng: number}
@@ -41,8 +42,8 @@ function formatMeters(meters: number) {
 
 export default function Home() {
   const { state, logout } = useAuth()
-  const [originA, setOriginA] = useState('Alexanderplatz')
-  const [originB, setOriginB] = useState('Hermannplatz')
+  const [originA, setOriginA] = useState('Alexanderplatz, Berlin')
+  const [originB, setOriginB] = useState('Hermannplatz, Berlin')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [result, setResult] = useState<MeetResponse | null>(null)
@@ -118,27 +119,35 @@ export default function Home() {
         <section className={styles.resultsSection}>
           <h2>Result</h2>
 
-          <div className={styles.bestPointCard}>
-            <h3 className={styles.bestPointTitle}>Best point</h3>
+          <div className={styles.resultGrid}>
+            <MapView
+              a={result.origins.a.point}
+              b={result.origins.b.point}
+              best={result.best.point}
+            />
 
-            <p className={styles.cardRow}>
-              <strong>Coordinates:</strong> {result.best.point.lat.toFixed(6)}, {result.best.point.lng.toFixed(6)}
-            </p>
+            <div className={styles.bestPointCard}>
+              <h3 className={styles.bestPointTitle}>Best point</h3>
 
-            <p className={styles.cardRow}>
-              <strong>A ETA:</strong> {formatSeconds(result.best.etaASeconds)} ({formatMeters(result.best.distanceAMeters)})
-              <br />
-              <strong>B ETA:</strong> {formatSeconds(result.best.etaBSeconds)} ({formatMeters(result.best.distanceBMeters)})
-            </p>
+              <p className={styles.cardRow}>
+                <strong>Coordinates:</strong> {result.best.point.lat.toFixed(6)}, {result.best.point.lng.toFixed(6)}
+              </p>
 
-            <p className={styles.cardRow}>
-              <strong>Fairness:</strong> max {formatSeconds(result.best.maxEtaSeconds)}, diff {formatSeconds(result.best.diffSeconds)}
-            </p>
+              <p className={styles.cardRow}>
+                <strong>A ETA:</strong> {formatSeconds(result.best.etaASeconds)} ({formatMeters(result.best.distanceAMeters)})
+                <br />
+                <strong>B ETA:</strong> {formatSeconds(result.best.etaBSeconds)} ({formatMeters(result.best.distanceBMeters)})
+              </p>
 
-            <details className={styles.debugDetails}>
-              <summary>Debug</summary>
-              <pre className={styles.debugPre}>{JSON.stringify(result.debug ?? {}, null, 2)}</pre>
-            </details>
+              <p className={styles.cardRow}>
+                <strong>Fairness:</strong> max {formatSeconds(result.best.maxEtaSeconds)}, diff {formatSeconds(result.best.diffSeconds)}
+              </p>
+
+              <details className={styles.debugDetails}>
+                <summary>Debug</summary>
+                <pre className={styles.debugPre}>{JSON.stringify(result.debug ?? {}, null, 2)}</pre>
+              </details>
+            </div>
           </div>
 
           <h3 className={styles.alternativesTitle}>Alternatives</h3>

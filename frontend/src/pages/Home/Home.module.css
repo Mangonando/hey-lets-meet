@@ -41,6 +41,11 @@
   margin-top: 28px;
 }
 
+.resultGrid {
+  display: grid;
+  gap: 16px;
+}
+
 .bestPointCard {
   padding: 16px;
   border: 1px solid #ddd;
