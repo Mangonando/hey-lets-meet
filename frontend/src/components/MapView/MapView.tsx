@@ -10,7 +10,7 @@ function FitBounds ({ points}: {points: LatLng[]}) {
 
     useEffect(() => {
         if (points.length === 0) return
-        const bounds = L.latLngBounds(points.map((p) => [p.lat, p.lng] as [number, number]))
+        const bounds = L.latLngBounds(points.map((point) => [point.lat, point.lng] as [number, number]))
         map.fitBounds(bounds, { padding: [30, 30]})
     }, [map, points])
     return null
