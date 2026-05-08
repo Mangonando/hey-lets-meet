@@ -10,3 +10,16 @@
   height: 100%;
   width: 100%;
 }
+
+:global(.leaflet-control-zoom-in),
+:global(.leaflet-control-zoom-out) {
+  background-color: #FFF6E9 !important;
+  color: #003F47 !important;
+  border-color: #003F47 !important;
+}
+
+:global(.leaflet-control-zoom-in:hover),
+:global(.leaflet-control-zoom-out:hover) {
+  background-color: #FFF6E9 !important;
+  color: #003F47 !important;
+}

@@ -24,7 +24,6 @@ type MeetResponse = {
   }
   best: MeetpointResult
   alternatives: MeetpointResult[]
-  debug?: { midpoint: LatLng}
 }
 
 function formatSeconds(seconds: number) {
@@ -47,6 +46,7 @@ export default function Home() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [result, setResult] = useState<MeetResponse | null>(null)
+  const [selectedIndex, setSelectedIndex] = useState(0)
 
   if (state.status !== 'authed') return null
 
@@ -55,6 +55,7 @@ export default function Home() {
     setError(null)
     setLoading(true)
     setResult(null)
+    setSelectedIndex(0)
 
     try {
       const meetResponse = await api<MeetResponse>('/api/meetpoints/suggest', {
@@ -74,17 +75,13 @@ export default function Home() {
     <div className={styles.page}>
       <header className={styles.header}>
         <div>
-          <h1 className={styles.headerTitle}>Hey Let's Meet</h1>
-          <p className={styles.headerEmail}>Hello, {state.user.email}</p>
+          <h1 className={styles.headerTitle}>Hey {state.user.email.split('@')[0]}! Let's Meet</h1>
         </div>
 
         <button onClick={() => void logout()}>Logout</button>
       </header>
-
-      <hr className={styles.divider} />
-
       <section>
-        <h2>Suggest a fair meeting point (walking)</h2>
+        <p>Add your address and the one you want to meet and it will suggest you a fair meeting point</p>
 
         <form onSubmit={onSubmit} className={styles.form}>
           <label>
@@ -115,66 +112,75 @@ export default function Home() {
         </form>
       </section>
 
-      {result && (
-        <section className={styles.resultsSection}>
-          <h2>Result</h2>
+      {result && (() => {
+        const allPoints = [result.best, ...result.alternatives]
+        const tabLabels = ['Best point', 'Alternative 1', 'Alternative 2', 'Alternative 3']
+        const selected = allPoints[selectedIndex]
+        return (
+          <section className={styles.resultsSection}>
+            <h2>Result</h2>
 
-          <div className={styles.resultGrid}>
             <MapView
               a={result.origins.a.point}
               b={result.origins.b.point}
-              best={result.best.point}
+              best={selected.point}
             />
 
-            <div className={styles.bestPointCard}>
-              <h3 className={styles.bestPointTitle}>Best point</h3>
-
-              <p className={styles.cardRow}>
-                <strong>Coordinates:</strong> {result.best.point.lat.toFixed(6)}, {result.best.point.lng.toFixed(6)}
-              </p>
-
-              <p className={styles.cardRow}>
-                <strong>A ETA:</strong> {formatSeconds(result.best.etaASeconds)} ({formatMeters(result.best.distanceAMeters)})
-                <br />
-                <strong>B ETA:</strong> {formatSeconds(result.best.etaBSeconds)} ({formatMeters(result.best.distanceBMeters)})
-              </p>
-
-              <p className={styles.cardRow}>
-                <strong>Fairness:</strong> max {formatSeconds(result.best.maxEtaSeconds)}, diff {formatSeconds(result.best.diffSeconds)}
-              </p>
-
-              <details className={styles.debugDetails}>
-                <summary>Debug</summary>
-                <pre className={styles.debugPre}>{JSON.stringify(result.debug ?? {}, null, 2)}</pre>
-              </details>
-            </div>
-          </div>
-
-          <h3 className={styles.alternativesTitle}>Alternatives</h3>
-          {result.alternatives.length === 0 ? (
-            <p>No alternatives returned.</p>
-          ) : (
-            <div className={styles.alternativesGrid}>
-              {result.alternatives.map((alt, index) => (
-                <div key={index} className={styles.alternativeCard}>
-                  <div>
-                    <strong>
-                      {alt.point.lat.toFixed(6)}, {alt.point.lng.toFixed(6)}
-                    </strong>
-                  </div>
-                  <div className={styles.alternativeCardRow}>
-                    A: {formatSeconds(alt.etaASeconds)} ({formatMeters(alt.distanceAMeters)}) • B: {formatSeconds(alt.etaBSeconds)} (
-                    {formatMeters(alt.distanceBMeters)})
-                  </div>
-                  <div className={styles.alternativeCardRow}>
-                    max {formatSeconds(alt.maxEtaSeconds)} • diff {formatSeconds(alt.diffSeconds)}
-                  </div>
-                </div>
+            <div className={styles.tabs}>
+              {allPoints.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setSelectedIndex(index)}
+                  className={index === selectedIndex ? styles.tabActive : styles.tab}
+                >
+                  {tabLabels[index]}
+                </button>
               ))}
             </div>
-          )}
-        </section>
-      )}
+
+            <div className={styles.pointCard}>
+              <p className={styles.cardRow}>
+                <strong>Coordinates:</strong> {selected.point.lat.toFixed(6)}, {selected.point.lng.toFixed(6)}
+              </p>
+
+              <p className={styles.cardRow}>
+                <strong>A ETA:</strong> {formatSeconds(selected.etaASeconds)} ({formatMeters(selected.distanceAMeters)})
+                <br />
+                <strong>B ETA:</strong> {formatSeconds(selected.etaBSeconds)} ({formatMeters(selected.distanceBMeters)})
+              </p>
+
+              <p className={styles.cardRow}>
+                <strong>Fairness:</strong> max {formatSeconds(selected.maxEtaSeconds)}, diff {formatSeconds(selected.diffSeconds)}
+              </p>
+
+              <div className={styles.inlineButtons}>
+                <button
+                  className={styles.inlineButton}
+                  onClick={() => void navigator.clipboard.writeText(`${selected.point.lat.toFixed(6)}, ${selected.point.lng.toFixed(6)}`)}
+                >
+                  Copy
+                </button>
+                <a
+                  href={`https://www.google.com/maps?q=${selected.point.lat},${selected.point.lng}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className={styles.inlineButton}
+                >
+                  Open in Google Maps
+                </a>
+                <a
+                  href={`https://wa.me/?text=${encodeURIComponent(`Hey let's meet here! https://www.google.com/maps?q=${selected.point.lat},${selected.point.lng}`)}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className={styles.inlineButton}
+                >
+                  Share on WhatsApp
+                </a>
+              </div>
+            </div>
+          </section>
+        )
+      })()}
     </div>
   )
 }

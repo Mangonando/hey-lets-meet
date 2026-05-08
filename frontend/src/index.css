@@ -1,0 +1,57 @@
+@import url('https://fonts.googleapis.com/css2?family=Carlito:wght@400;600;700&display=swap');
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background-color: var(--color-wheat);
+  color: var(--color-onyx);
+  font-family: 'Carlito', sans-serif;
+}
+
+input {
+  background-color: var(--color-nectarine);
+  border: none;
+  border-radius: 9999px;
+  padding: 12px 24px;
+  font-family: inherit;
+  font-size: 1rem;
+  color: var(--color-onyx);
+  outline: none;
+}
+
+input:focus {
+  outline: 2px solid var(--color-amber);
+  caret-color: var(--color-amber);
+}
+
+button {
+  background-color: var(--color-oceanic);
+  color: var(--color-wheat);
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 1rem;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+button:hover:not(:disabled) {
+  background-color: var(--color-abyss);
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+a:hover {
+  color: var(--color-nectarine);
+}
+

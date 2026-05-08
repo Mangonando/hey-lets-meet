@@ -2,8 +2,28 @@ import { useEffect, useMemo } from "react";
 import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
 import L from 'leaflet'
 import styles from './MapView.module.css'
+import { colors } from '../../lib/colors'
 
 export type LatLng = { lat: number; lng: number}
+
+function ScrollWheelControl() {
+    const map = useMap()
+
+    useEffect(() => {
+        map.scrollWheelZoom.disable()
+        const container = map.getContainer()
+        const enable = () => map.scrollWheelZoom.enable()
+        const disable = () => map.scrollWheelZoom.disable()
+        container.addEventListener('mouseenter', enable)
+        container.addEventListener('mouseleave', disable)
+        return () => {
+            container.removeEventListener('mouseenter', enable)
+            container.removeEventListener('mouseleave', disable)
+        }
+    }, [map])
+
+    return null
+}
 
 function FitBounds ({ points}: {points: LatLng[]}) {
     const map = useMap()
@@ -15,6 +35,22 @@ function FitBounds ({ points}: {points: LatLng[]}) {
     }, [map, points])
     return null
 }
+
+function pinIcon(fill: string, dot: string) {
+    return L.divIcon({
+        className: '',
+        html: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 36" width="24" height="36">
+          <path d="M12 0C5.373 0 0 5.373 0 12c0 9 12 24 12 24S24 21 24 12C24 5.373 18.627 0 12 0z" fill="${fill}"/>
+          <circle cx="12" cy="12" r="5" fill="${dot}"/>
+        </svg>`,
+        iconSize: [24, 36],
+        iconAnchor: [12, 36],
+        popupAnchor: [0, -36],
+    })
+}
+
+const oceanicIcon = pinIcon(colors.oceanic, colors.wheat)
+const amberIcon   = pinIcon(colors.amber,   colors.wheat)
 
 export default function MapView({
     a,
@@ -29,15 +65,16 @@ export default function MapView({
     const center: [number, number] = [best.lat, best.lng]
     return (
     <div className={styles.container}>
-      <MapContainer center={center} zoom={13} className={styles.map} scrollWheelZoom>
+      <MapContainer center={center} zoom={13} className={styles.map}>
         <TileLayer
           attribution='&copy; OpenStreetMap contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
 
+        <ScrollWheelControl />
         <FitBounds points={points} />
 
-        <Marker position={[a.lat, a.lng]}>
+        <Marker position={[a.lat, a.lng]} icon={oceanicIcon}>
           <Popup>
             <strong>Origin A</strong>
             <br />
@@ -45,7 +82,7 @@ export default function MapView({
           </Popup>
         </Marker>
 
-        <Marker position={[b.lat, b.lng]}>
+        <Marker position={[b.lat, b.lng]} icon={oceanicIcon}>
           <Popup>
             <strong>Origin B</strong>
             <br />
@@ -53,7 +90,7 @@ export default function MapView({
           </Popup>
         </Marker>
 
-        <Marker position={[best.lat, best.lng]}>
+        <Marker position={[best.lat, best.lng]} icon={amberIcon}>
           <Popup>
             <strong>Best meeting point</strong>
             <br />

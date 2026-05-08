@@ -5,8 +5,8 @@ import { api, type User } from '../../lib/api'
 import styles from './Login.module.css'
 
 export default function Login() {
-  const navigate = useNavigate()
   const { refresh } = useAuth()
+  const navigate = useNavigate()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
@@ -32,7 +32,8 @@ export default function Login() {
 
   return (
     <div className={styles.page}>
-      <h2>Login</h2>
+      <h1 className={styles.title}>Welcome to Hey Let's Meet</h1>
+      <p className={styles.subtitle}>Please login to continue</p>
       <form onSubmit={onSubmit} className={styles.form}>
         <label>
           Email

@@ -1,6 +1,6 @@
 .page {
   max-width: 420px;
-  margin: 48px auto;
+  margin: 0 auto;
   padding: 24px;
 }
 
@@ -15,6 +15,15 @@
 
 .error {
   color: crimson;
+}
+
+.title {
+  margin-bottom: 4px;
+}
+
+.subtitle {
+  margin-top: 0;
+  margin-bottom: 20px;
 }
 
 .footer {

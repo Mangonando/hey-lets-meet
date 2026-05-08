@@ -32,7 +32,8 @@ export default function Register() {
 
   return (
     <div className={styles.page}>
-      <h2>Register</h2>
+      <h1 className={styles.title}>Welcome to Hey Let's Meet</h1>
+      <p className={styles.subtitle}>Please create an account to continue</p>
       <form onSubmit={onSubmit} className={styles.form}>
         <label>
           Email
@@ -59,7 +60,7 @@ export default function Register() {
         </label>
         {error && <div className={styles.error}>{error}</div>}
         <button type="submit" disabled={loading}>
-          {loading ? 'Creating account...' : 'Create account'}
+          {loading ? 'Creating account...' : 'Sign in'}
         </button>
       </form>
       <p className={styles.footer}>

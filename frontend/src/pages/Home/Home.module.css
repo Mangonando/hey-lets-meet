@@ -1,6 +1,6 @@
 .page {
   max-width: 900px;
-  margin: 48px auto;
+  margin: 0 auto;
   padding: 24px;
 }
 
@@ -41,49 +41,62 @@
   margin-top: 28px;
 }
 
-.resultGrid {
-  display: grid;
-  gap: 16px;
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
 }
 
-.bestPointCard {
+.tab {
+  background: transparent;
+  border: 1.5px solid var(--color-oceanic);
+  color: var(--color-oceanic);
+  font-weight: 600;
+}
+
+.tab:hover {
+  background-color: var(--color-abyss);
+  color: var(--color-wheat);
+  border-color: var(--color-abyss);
+}
+
+.tabActive {
+  font-weight: 600;
+  border: 1.5px solid transparent;
+}
+
+.pointCard {
+  margin-top: 16px;
   padding: 16px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--color-oceanic);
   border-radius: 8px;
-}
-
-.bestPointTitle {
-  margin-top: 0;
 }
 
 .cardRow {
   margin: 8px 0;
 }
 
-.debugDetails {
-  margin-top: 12px;
+.inlineButtons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
 }
 
-.debugPre {
-  margin-top: 12px;
-  white-space: pre-wrap;
+.inlineButton {
+  padding: 4px 10px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  background-color: var(--color-oceanic);
+  color: var(--color-wheat);
+  border: none;
+  border-radius: 9999px;
+  cursor: pointer;
+  text-decoration: none !important;
+  transition: background-color 0.15s;
 }
 
-.alternativesTitle {
-  margin-top: 20px;
-}
-
-.alternativesGrid {
-  display: grid;
-  gap: 12px;
-}
-
-.alternativeCard {
-  padding: 12px;
-  border: 1px solid #eee;
-  border-radius: 8px;
-}
-
-.alternativeCardRow {
-  margin-top: 6px;
+.inlineButton:hover {
+  background-color: var(--color-abyss);
 }
