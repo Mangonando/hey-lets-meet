@@ -41,8 +41,8 @@ function formatMeters(meters: number) {
 
 export default function Home() {
   const { state, logout } = useAuth()
-  const [originA, setOriginA] = useState('Alexanderplatz, Berlin')
-  const [originB, setOriginB] = useState('Hermannplatz, Berlin')
+  const [originA, setOriginA] = useState('')
+  const [originB, setOriginB] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [result, setResult] = useState<MeetResponse | null>(null)
@@ -85,21 +85,19 @@ export default function Home() {
 
         <form onSubmit={onSubmit} className={styles.form}>
           <label>
-            Address A
             <input
               value={originA}
               onChange={(e) => setOriginA(e.target.value)}
-              placeholder="e.g. Alexanderplatz"
+              placeholder="Address A"
               className={styles.fullWidth}
             />
           </label>
 
           <label>
-            Address B
             <input
               value={originB}
               onChange={(e) => setOriginB(e.target.value)}
-              placeholder="e.g. Hermannplatz"
+              placeholder="Address B"
               className={styles.fullWidth}
             />
           </label>
