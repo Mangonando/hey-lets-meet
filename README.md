@@ -8,6 +8,10 @@ Hey Let's Meet is a fullstack web application that suggests a fair walking meeti
 The app shows the best meeting point and up to three alternatives on an interactive map. Each result includes walking time and distance for both people, a fairness score (max Eastimated Time of Arrival -ETA- and the difference between the two), and the option to copy the coordinates, open the location in Google Maps, or share it via WhatsApp.
 
 
+#### App Sample
+
+![Hey Let's Meet](screenshots/Screenshot%202026-05-12%20at%2011.53.35.png)
+
 #### How it works
 
 First, user needs to register, if they are already register they must login. After register/login is succesful the user submits two addresses, the backend geocodes both into coordinates using the OpenRouteService API. It then calculates the geographic midpoint and builds a grid of meeting points around it. For each candidate, it calls the OpenRouteService walking directions API to get real street walking times and distances, not just straight-line estimates. The candidates are then ranked by fairness: first by minimising the maximum ETA (so neither person walks much longer than the other), then by minimising the difference between the two ETAs, and finally by total combined distance. The best result and the top three alternatives are returned to the frontend.
