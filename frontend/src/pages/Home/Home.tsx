@@ -75,7 +75,7 @@ export default function Home() {
     <div className={styles.page}>
       <header className={styles.header}>
         <div>
-          <h1 className={styles.headerTitle}>Hey {state.user.email.split('@')[0]}! Let's Meet</h1>
+          <h1 className={styles.headerTitle}>Hey {state.user.email.split('@')[0].charAt(0).toUpperCase() + state.user.email.split('@')[0].slice(1)}! Let's Meet</h1>
         </div>
 
         <button onClick={() => void logout()}>Logout</button>
