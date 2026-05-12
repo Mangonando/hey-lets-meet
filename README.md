@@ -10,13 +10,13 @@ The app shows the best meeting point and up to three alternatives on an interact
 
 #### App Sample
 
-![Hey Let's Meet](screenshots/Screenshot 2026-05-12 at 12.04.13.png)
+![Hey Let's Meet](screenshots/Screenshot%202026-05-12%20at%2012.04.13.png)
 
-![Hey Let's Meet](screenshots/Screenshot 2026-05-12 at 12.08.42.png)
+![Hey Let's Meet](screenshots/Screenshot%202026-05-12%20at%2012.08.42.png)
 
-![Hey Let's Meet](screenshots/Screenshot 2026-05-12 at 12.11.06.png)
+![Hey Let's Meet](screenshots/Screenshot%202026-05-12%20at%2012.11.06.png)
 
-![Hey Let's Meet](screenshots/Screenshot 2026-05-12 at 12.11.41.png)
+![Hey Let's Meet](screenshots/Screenshot%202026-05-12%20at%2012.11.41.png)
 
 #### How it works
 
