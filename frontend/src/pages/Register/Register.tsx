@@ -35,29 +35,25 @@ export default function Register() {
       <h1 className={styles.title}>Welcome to Hey Let's Meet</h1>
       <p className={styles.subtitle}>Please create an account to continue</p>
       <form onSubmit={onSubmit} className={styles.form}>
-        <label>
-          Email
-          <input
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            type="email"
-            required
-            autoComplete="email"
-            className={styles.input}
-          />
-        </label>
-        <label>
-          Password
-          <input
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            type="password"
-            required
-            minLength={8}
-            autoComplete="new-password"
-            className={styles.input}
-          />
-        </label>
+        <input
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          type="email"
+          required
+          placeholder="Email"
+          autoComplete="email"
+          className={styles.input}
+        />
+        <input
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          type="password"
+          required
+          minLength={8}
+          placeholder="Password"
+          autoComplete="new-password"
+          className={styles.input}
+        />
         {error && <div className={styles.error}>{error}</div>}
         <button type="submit" disabled={loading}>
           {loading ? 'Creating account...' : 'Sign in'}
