@@ -116,7 +116,6 @@ export default function Home() {
         const selected = allPoints[selectedIndex]
         return (
           <section className={styles.resultsSection}>
-            <h2>Result</h2>
 
             <MapView
               a={result.origins.a.point}
