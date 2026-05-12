@@ -8,7 +8,7 @@ Hey Let's Meet is a fullstack web application that suggests a fair walking meeti
 The app shows the best meeting point and up to three alternatives on an interactive map. Each result includes walking time and distance for both people, a fairness score (max Eastimated Time of Arrival -ETA- and the difference between the two), and the option to copy the coordinates, open the location in Google Maps, or share it via WhatsApp.
 
 
-#### App Sample
+#### Webapp Sample
 
 ![Hey Let's Meet](screenshots/Screenshot%202026-05-12%20at%2012.04.13.png)
 
