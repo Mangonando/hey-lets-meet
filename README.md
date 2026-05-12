@@ -8,16 +8,16 @@ Hey Let's Meet is a fullstack web application that suggests a fair walking meeti
 The app shows the best meeting point and up to three alternatives on an interactive map. Each result includes walking time and distance for both people, a fairness score (max Eastimated Time of Arrival -ETA- and the difference between the two), and the option to copy the coordinates, open the location in Google Maps, or share it via WhatsApp.
 
 
-##### How it works
+#### How it works
 
 First, user needs to register, if they are already register they must login. After register/login is succesful the user submits two addresses, the backend geocodes both into coordinates using the OpenRouteService API. It then calculates the geographic midpoint and builds a grid of meeting points around it. For each candidate, it calls the OpenRouteService walking directions API to get real street walking times and distances, not just straight-line estimates. The candidates are then ranked by fairness: first by minimising the maximum ETA (so neither person walks much longer than the other), then by minimising the difference between the two ETAs, and finally by total combined distance. The best result and the top three alternatives are returned to the frontend.
 
 To stay within the OpenRouteService free tier rate limit of 40 requests per minute, the grid is kept small (3×3 = 9 candidates) and all geocoding and routing results are cached in SQLite so repeated queries don't consume extra API calls.
 
 
-##### Project structure
+#### Project structure
 
-###### Backend (`backend/`)
+##### Backend (`backend/`)
 
 The backend is written in Go and exposes a REST API over HTTP.
 
@@ -39,7 +39,7 @@ The backend is written in Go and exposes a REST API over HTTP.
 
 - **`migrations/`:** SQL migration files applied in order at startup. Covers users, sessions, and the geocoding and routing cache tables.
 
-###### Frontend (`frontend/`)
+##### Frontend (`frontend/`)
 
 The frontend is a React + TypeScript single-page application built with Vite.
 
@@ -58,7 +58,7 @@ The frontend is a React + TypeScript single-page application built with Vite.
 - **`src/pages/Login/` and `src/pages/Register/`:** Authentication pages with form validation and error display.
 
 
-##### Design decisions
+#### Design decisions
 
 **Go over Python:** A personal choice to learn a new language. Despite my more familiarity with Python I preferred to use this opportunity to try Go for the first time.
 
@@ -73,6 +73,6 @@ The frontend is a React + TypeScript single-page application built with Vite.
 **CSS Modules over Bootstrap or Tailwind:** This was a deliberate choice to practice writing CSS rather than relying on a framework. CSS Modules were chosen over plain CSS because they scope class names to the component, preventing naming collisions and making it clear which styles belong to which component.
 
 
-##### AI assistance
+#### AI assistance
 
 This project was built with the assistance of Claude (Anthropic) as an AI pair programmer. Claude was used to discuss architectural approaches, explore design tradeoffs, review naming and code clarity, and speed up implementation. All design decisions, feature choices, and direction were made by the author. The AI served as an amplifier, not as a replacement for understanding.
